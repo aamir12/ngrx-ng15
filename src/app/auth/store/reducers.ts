@@ -1,13 +1,13 @@
 import {createFeature, createReducer, on} from '@ngrx/store'
 import {AuthStateInterface} from '../types/authState.interface'
 import {authActions} from './actions'
-import {  routerNavigationAction } from '@ngrx/router-store'
+import {routerNavigationAction} from '@ngrx/router-store'
 
 const initialState: AuthStateInterface = {
   isSubmitting: false,
   isLoading: false,
-  currentUser:undefined,
-  validationErrors:null
+  currentUser: undefined,
+  validationErrors: null,
 }
 
 const authFeature = createFeature({
@@ -16,38 +16,52 @@ const authFeature = createFeature({
     initialState,
     on(authActions.register, (state) => ({
       ...state,
-      isSubmitting: true, 
-      validationErrors:null
+      isSubmitting: true,
+      validationErrors: null,
     })),
-    on(authActions.registerSuccess,(state,actions) => ({ 
+    on(authActions.registerSuccess, (state, actions) => ({
       ...state,
       isSubmitting: false,
       currentUser: actions.currentUser,
     })),
-    on(authActions.registerFailure,(state,actions) => ({
-       ...state,
+    on(authActions.registerFailure, (state, actions) => ({
+      ...state,
       isSubmitting: false,
-      validationErrors:actions.errors 
+      validationErrors: actions.errors,
     })),
     on(authActions.login, (state) => ({
       ...state,
-      isSubmitting: true, 
-      validationErrors:null
+      isSubmitting: true,
+      validationErrors: null,
     })),
-    on(authActions.loginSuccess,(state,actions) => ({ 
+    on(authActions.loginSuccess, (state, actions) => ({
       ...state,
       isSubmitting: false,
       currentUser: actions.currentUser,
     })),
-    on(authActions.loginFailure,(state,actions) => ({
-       ...state,
-      isSubmitting: false,
-      validationErrors:actions.errors 
-    })),
-    on(routerNavigationAction,(state) => ({
+    on(authActions.loginFailure, (state, actions) => ({
       ...state,
-     validationErrors:null
-   })),
+      isSubmitting: false,
+      validationErrors: actions.errors,
+    })),
+    on(routerNavigationAction, (state) => ({
+      ...state,
+      validationErrors: null,
+    })),
+    on(authActions.getCurrentUser, (state) => ({
+      ...state,
+      isLoading: true,
+    })),
+    on(authActions.getCurrentUserSuccess, (state, actions) => ({
+      ...state,
+      isLoading: false,
+      currentUser: actions.currentUser,
+    })),
+    on(authActions.getCurrentUserFailure, (state, actions) => ({
+      ...state,
+      isLoading: false,
+      currentUser: null,
+    }))
   ),
 })
 
@@ -59,5 +73,5 @@ export const {
   selectIsSubmitting,
   selectCurrentUser,
   selectIsLoading,
-  selectValidationErrors
+  selectValidationErrors,
 } = authFeature
